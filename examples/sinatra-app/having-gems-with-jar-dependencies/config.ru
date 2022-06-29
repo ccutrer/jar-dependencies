@@ -1,9 +1,11 @@
-$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
+# frozen_string_literal: true
 
-require 'bundler/setup'
+$LOAD_PATH.unshift(__dir__)
 
-require 'app/hellowarld'
+require "bundler/setup"
 
-map '/' do
+require "app/hellowarld"
+
+map "/" do
   run Sinatra::Application
 end

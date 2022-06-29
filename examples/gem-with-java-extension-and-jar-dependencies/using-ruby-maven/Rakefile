@@ -1,22 +1,20 @@
-#-*- mode: ruby -*-
+# frozen_string_literal: true
 
-require 'ruby-maven'
-desc 'Pack jar after compiling classes'
+require "ruby-maven"
+desc "Pack jar after compiling classes"
 task :compile do
-  RubyMaven.exec('prepare-package')
+  RubyMaven.exec("prepare-package")
 end
 
-desc 'Clean build'
+desc "Clean build"
 task :clean do
-  RubyMaven.exec('clean')
+  RubyMaven.exec("clean")
 end
 
 task default: [:compile]
 
-require 'rubygems/package_task'
-Gem::PackageTask.new(eval(File.read('mygem.gemspec'))) do
-  desc 'Pack gem'
+require "rubygems/package_task"
+Gem::PackageTask.new(eval(File.read("mygem.gemspec"))) do # rubocop:disable Security/Eval
+  desc "Pack gem"
   task package: [:compile]
 end
-
-# vim: syntax=Ruby

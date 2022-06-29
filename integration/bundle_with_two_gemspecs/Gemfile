@@ -1,4 +1,6 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
-gemspec name: 'wat_two_gemspecs'
-gemspec name: 'another_gemspec'
+source "https://rubygems.org"
+
+gemspec name: "wat_two_gemspecs"
+gemspec name: "another_gemspec"
