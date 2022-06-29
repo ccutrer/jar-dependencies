@@ -31,6 +31,12 @@ module Jars
           @done << a.key
         end
       end
+
+      def attach_repos
+        Jars.additional_maven_repos.each_with_index do |repo, index|
+          self["jars.repos.#{index}"] = repo
+        end
+      end
     end
 
     attr_reader :debug, :verbose

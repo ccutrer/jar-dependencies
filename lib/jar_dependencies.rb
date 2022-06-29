@@ -35,6 +35,8 @@ module Jars
     SKIP_LOCK = "JARS_SKIP_LOCK"
     # do not require any jars if set to false
     REQUIRE = "JARS_REQUIRE"
+    # additional repos to search for jars
+    ADDITIONAL_MAVEN_REPOS = "JARS_ADDITIONAL_MAVEN_REPOS"
     # @private
     NO_REQUIRE = "JARS_NO_REQUIRE"
     # no more warnings on conflict. this still requires jars but will
@@ -201,6 +203,10 @@ module Jars
       absolute(to_prop(HOME)) || local_maven_repo
     end
 
+    def additional_maven_repos
+      (to_prop(ADDITIONAL_MAVEN_REPOS) || "").split(":").freeze
+    end
+
     def require_jars_lock!(scope = :runtime)
       urls = jars_lock_from_class_loader
       if urls && !urls.empty?
@@ -274,6 +280,10 @@ module Jars
       end
     end
 
+    def find_jar(group_id, artifact_id, *classifier_version)
+      find_jar_internal(group_id, artifact_id, *classifier_version)
+    end
+
     def warn(msg = nil)
       Kernel.warn(msg || yield) unless quiet? && !verbose?
     end
@@ -339,24 +349,27 @@ module Jars
       file
     end
 
-    def do_require(*args)
-      jar = to_jar(*args)
-      local = File.join(Dir.pwd, "jars", jar)
-      vendor = File.join(Dir.pwd, "vendor", "jars", jar)
-      file = File.join(home, jar)
-      # use jar from local repository if exists
-      if File.exist?(file)
-        require file
-      # use jar from PWD/jars if exists
-      elsif File.exist?(local)
-        require local
-      # use jar from PWD/vendor/jars if exists
-      elsif File.exist?(vendor)
-        require vendor
-      else
-        # otherwise try to find it on the load path
-        require jar
+    def find_jar_internal(group_id, artifact_id, *classifier_version, return_base_file: nil)
+      jar = to_jar(group_id, artifact_id, *classifier_version)
+      search_dirs = [
+        # use jar from local repository if exists
+        home,
+        # use jar from PWD/jars if exists
+        File.join(Dir.pwd, "jars"),
+        # use jar from PWD/vendor/jars if exists
+        File.join(Dir.pwd, "vendor", "jars")
+      ] + additional_maven_repos
+      search_dirs.each do |dir|
+        file = File.join(dir, jar)
+        return file if File.exist?(file)
       end
+      return_base_file && jar
+    end
+
+    def do_require(*args)
+      jar = find_jar_internal(*args, return_base_file: true)
+      # otherwise try to find it on the load path
+      require jar
     rescue LoadError => e
       raise "\n\n\tyou might need to reinstall the gem which depends on the " \
             "missing jar or in case there is Jars.lock then resolve the jars with " \

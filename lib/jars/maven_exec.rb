@@ -69,6 +69,7 @@ module Jars
       maven = factory.maven_new(File.expand_path("gemspec_pom.rb", __dir__))
 
       is_local_file = File.expand_path(File.dirname(@specfile)) == File.expand_path(Dir.pwd)
+      maven.attach_repos
       maven.attach_jars(@spec, all_dependencies: is_local_file)
 
       maven["jars.specfile"] = @specfile.to_s

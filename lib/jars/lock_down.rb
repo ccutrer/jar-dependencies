@@ -44,6 +44,7 @@ module Jars
       Bundler.setup("default")
       maven.property("jars.bundler", true)
       cwd = File.expand_path(".")
+      maven.attach_repos
       Gem.loaded_specs.each do |_name, spec|
         # if gemspec is local then include all dependencies
         maven.attach_jars(spec, all_dependencies: cwd == spec.full_gem_path)

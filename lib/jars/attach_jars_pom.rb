@@ -2,6 +2,13 @@
 
 # this file is maven DSL
 
+(0..1_000).each do |i|
+  path = ENV_JAVA["jars.repos.#{i}"]
+  break unless path
+
+  repository "repo#{i}", "file://#{path}", "Custom Local Repo"
+end
+
 (0..10_000).each do |i|
   coord = ENV_JAVA["jars.#{i}"]
   break unless coord
