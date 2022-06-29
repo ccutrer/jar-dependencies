@@ -1,20 +1,18 @@
-#-*- mode: ruby -*-
+# frozen_string_literal: true
 
-require 'jars/classpath'
-require 'rake/javaextensiontask'
+require "jars/classpath"
+require "rake/javaextensiontask"
 
-spec = eval File.read('mygem.gemspec')
-Rake::JavaExtensionTask.new('mygem', spec) do |ext|
+spec = eval File.read("mygem.gemspec") # rubocop:disable Security/Eval
+Rake::JavaExtensionTask.new("mygem", spec) do |ext|
   ext.classpath = Jars::Classpath.new.classpath_string
-  ext.ext_dir = 'ext'
+  ext.ext_dir = "ext"
 end
 
 task default: [:compile]
 
-require 'rubygems/package_task'
+require "rubygems/package_task"
 Gem::PackageTask.new(spec) do
-  desc 'Pack gem'
+  desc "Pack gem"
   task package: [:compile]
 end
-
-# vim: syntax=Ruby

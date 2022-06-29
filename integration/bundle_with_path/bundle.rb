@@ -1,15 +1,13 @@
+# frozen_string_literal: true
 
-file = File.expand_path('../../../jar-dependencies.gemspec', __FILE__)
-spec = Dir.chdir(File.dirname(file)) do
-  eval(File.read(file))
-end
+require_relative "../../lib/jars/version"
 
 # force to use prereleased gem
-gem 'jar-dependencies', spec.version
-require 'jar-dependencies'
+gem "jar-dependencies", Jars::VERSION
+require "jar-dependencies"
 
-require 'bundler/friendly_errors'
+require "bundler/friendly_errors"
 Bundler.with_friendly_errors do
-  require 'bundler/cli'
+  require "bundler/cli"
   Bundler::CLI.start(ARGV, debug: true)
 end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # bundle install will download and install the jar dependencies
 # as well create the lib/example_jars.rb which loads the jars at
 # runtime
 
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec

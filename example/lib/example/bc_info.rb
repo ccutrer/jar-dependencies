@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # loads all dependent jars and exmaple.jar
-require 'example'
+require "example"
 
 java_import org.bouncycastle.jce.provider.BouncyCastleProvider
 

@@ -1,50 +1,48 @@
-#-*- mode: ruby -*-
+# frozen_string_literal: true
 
-repository id: 'rubygems-releases', url: 'http://rubygems-proxy.torquebox.org/releases'
+repository id: "rubygems-releases", url: "http://rubygems-proxy.torquebox.org/releases"
 
 # gemfile
 
-gem 'leafy-metrics', '0.6.1'
+gem "leafy-metrics", "0.6.1"
 
-gem! 'bundler', '${bundler.version}'
+gem! "bundler", "${bundler.version}"
 
 phase :test do
-  plugin('org.codehaus.mojo:exec-maven-plugin', '1.2',
+  plugin("org.codehaus.mojo:exec-maven-plugin", "1.2",
          executable: :java,
-         environmentVariables: { 'GEM_HOME' => '${gem.home}',
-                                 'GEM_PATH' => '${gem.home}',
-                                 'JARS_VERBOSE' => true }) do
+         environmentVariables: { "GEM_HOME" => "${gem.home}",
+                                 "GEM_PATH" => "${gem.home}",
+                                 "JARS_VERBOSE" => true }) do
     execute_goal(:exec,
-                 id: 'jruby -S lock_jars',
-                 arguments: ['-classpath',
-                             xml('<classpath/>'),
-                             'org.jruby.Main',
-                             '${gem.home}/bin/lock_jars', '--tree'])
+                 id: "jruby -S lock_jars",
+                 arguments: ["-classpath",
+                             xml("<classpath/>"),
+                             "org.jruby.Main",
+                             "${gem.home}/bin/lock_jars", "--tree"])
     execute_goal(:exec,
-                 id: 'jruby test.rb',
-                 arguments: ['-classpath',
-                             xml('<classpath/>'),
-                             'org.jruby.Main',
-                             'test.rb'])
+                 id: "jruby test.rb",
+                 arguments: ["-classpath",
+                             xml("<classpath/>"),
+                             "org.jruby.Main",
+                             "test.rb"])
     execute_goal(:exec,
-                 id: 'jruby -r jars/setup test.rb',
-                 arguments: ['-classpath',
-                             xml('<classpath/>'),
-                             'org.jruby.Main',
-                             '-rjars/setup', 'test.rb'])
+                 id: "jruby -r jars/setup test.rb",
+                 arguments: ["-classpath",
+                             xml("<classpath/>"),
+                             "org.jruby.Main",
+                             "-rjars/setup", "test.rb"])
   end
 end
 
-properties('gem.home' => '${project.basedir}/../rubygems',
-           'gem.path' => '${gem.home}')
+properties("gem.home" => "${project.basedir}/../rubygems",
+           "gem.path" => "${gem.home}")
 
-jar 'org.jruby:jruby-complete', '${jruby.old-version}'
+jar "org.jruby:jruby-complete", "${jruby.old-version}"
 
-gem 'jar-dependencies', '${jar-dependencies.version}'
-gem 'ruby-maven', '${ruby-maven.version}'
+gem "jar-dependencies", "${jar-dependencies.version}"
+gem "ruby-maven", "${ruby-maven.version}"
 
-jruby_plugin :gem, '${jruby.plugins.version}' do
+jruby_plugin :gem, "${jruby.plugins.version}" do
   execute_goal :initialize
 end
-
-# vim: syntax=Ruby

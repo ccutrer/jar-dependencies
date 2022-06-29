@@ -1,35 +1,32 @@
-#-*- mode: ruby -*-
+# frozen_string_literal: true
 
-require 'rspec/core/rake_task'
-require 'jars/classpath'
-require 'rake/javaextensiontask'
+require "rspec/core/rake_task"
+require "jars/classpath"
+require "rake/javaextensiontask"
 
-require 'jars/installer'
+require "jars/installer"
 task :install_jars do
-  Jars::JarInstaller.new.vendor_jars
-  # Jars::JarInstaller.new.install_jars
+  Jars::Installer.new.vendor_jars
 end
 
-desc 'Compiles extension and run specs'
-task default: [:compile, :spec]
+desc "Compiles extension and run specs"
+task default: %i[compile spec]
 
-spec = eval File.read('example.gemspec')
+spec = eval File.read("example.gemspec") # rubocop:disable Security/Eval
 
-desc 'compile src/main/java/** into lib/example.jar'
-Rake::JavaExtensionTask.new('example', spec) do |ext|
+desc "compile src/main/java/** into lib/example.jar"
+Rake::JavaExtensionTask.new("example", spec) do |ext|
   ext.classpath = Jars::Classpath.new.classpath_string
-  ext.source_version = '1.7'
-  ext.target_version = '1.7'
-  ext.ext_dir = 'src/main/java'
+  ext.source_version = "1.7"
+  ext.target_version = "1.7"
+  ext.ext_dir = "src/main/java"
 end
 
-require 'rubygems/package_task'
+require "rubygems/package_task"
 Gem::PackageTask.new(spec) do
-  desc 'Pack gem'
-  task package: [:install_jars, :compile]
+  desc "Pack gem"
+  task package: %i[install_jars compile]
 end
 
-desc 'Run specs'
+desc "Run specs"
 RSpec::Core::RakeTask.new
-
-# vim: syntax=Ruby

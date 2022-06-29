@@ -1,44 +1,42 @@
-#-*- mode: ruby -*-
+# frozen_string_literal: true
 
-repository id: 'rubygems-releases', url: 'http://rubygems-proxy.torquebox.org/releases'
+repository id: "rubygems-releases", url: "http://rubygems-proxy.torquebox.org/releases"
 
-plugin('org.codehaus.mojo:exec-maven-plugin', '1.2',
+plugin("org.codehaus.mojo:exec-maven-plugin", "1.2",
        executable: :java,
-       environmentVariables: { 'GEM_HOME' => '${gem.home}',
-                               'GEM_PATH' => '${gem.home}',
-                               'JARS_VERBOSE' => true }) do
+       environmentVariables: { "GEM_HOME" => "${gem.home}",
+                               "GEM_PATH" => "${gem.home}",
+                               "JARS_VERBOSE" => true }) do
   execute_goal(:exec,
-               id: 'Jars::Classpath.require',
+               id: "Jars::Classpath.require",
                phase: :compile,
-               arguments: ['-classpath',
-                           xml('<classpath/>'),
-                           'org.jruby.Main',
-                           '-rjars/classpath',
-                           '-e',
-                           'Jars::Classpath.require(:test);$CLASSPATH.each { |c| p c }'])
+               arguments: ["-classpath",
+                           xml("<classpath/>"),
+                           "org.jruby.Main",
+                           "-rjars/classpath",
+                           "-e",
+                           "Jars::Classpath.require(:test);$CLASSPATH.each { |c| p c }"])
   execute_goal(:exec,
-               id: 'lock_jars --tree',
+               id: "lock_jars --tree",
                phase: :compile,
-               arguments: ['-classpath',
-                           xml('<classpath/>'),
-                           'org.jruby.Main',
-                           '${gem.home}/bin/lock_jars',
-                           '--tree'])
+               arguments: ["-classpath",
+                           xml("<classpath/>"),
+                           "org.jruby.Main",
+                           "${gem.home}/bin/lock_jars",
+                           "--tree"])
 
   # TODO: more tests on Jars::Classpath.require(:test) etc
 end
 
-properties('gem.home' => '${project.basedir}/../rubygems',
-           'gem.path' => '${gem.home}')
+properties("gem.home" => "${project.basedir}/../rubygems",
+           "gem.path" => "${gem.home}")
 
-jar 'org.jruby:jruby-complete', '${jruby.old-version}'
+jar "org.jruby:jruby-complete", "${jruby.old-version}"
 
-gem 'jar-dependencies', '${jar-dependencies.version}'
-gem 'bundler', '${bundler.version}'
-gem 'ruby-maven', '${ruby-maven.version}'
+gem "jar-dependencies", "${jar-dependencies.version}"
+gem "bundler", "${bundler.version}"
+gem "ruby-maven", "${ruby-maven.version}"
 
-jruby_plugin :gem, '${jruby.plugins.version}' do
+jruby_plugin :gem, "${jruby.plugins.version}" do
   execute_goal :initialize
 end
-
-# vim: syntax=Ruby

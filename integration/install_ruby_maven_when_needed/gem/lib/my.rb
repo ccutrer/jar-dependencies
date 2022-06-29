@@ -1,1 +1,3 @@
-require 'my_jars'
+# frozen_string_literal: true
+
+require "my_jars"

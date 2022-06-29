@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Copyright (C) 2014 Christian Meier
 #
@@ -21,8 +23,8 @@
 
 if defined?(JRUBY_VERSION) && Gem.post_install_hooks.empty?
   Gem.post_install do |gem_installer|
-    unless (ENV['JARS_SKIP'] || ENV_JAVA['jars.skip']) == 'true'
-      require 'jars/installer'
+    unless (ENV["JARS_SKIP"] || ENV_JAVA["jars.skip"]) == "true"
+      require "jars/installer"
       jars = Jars::Installer.new(gem_installer.spec)
       jars.ruby_maven_install_options = gem_installer.options || {}
       jars.vendor_jars
