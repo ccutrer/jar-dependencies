@@ -21,6 +21,8 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+require "jars/maven_require"
+
 module Jars
   unless defined? Jars::SKIP_LOCK
     MAVEN_SETTINGS = "JARS_MAVEN_SETTINGS"

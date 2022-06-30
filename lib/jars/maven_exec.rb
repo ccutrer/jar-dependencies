@@ -51,6 +51,8 @@ module Jars
             setup(nil, allow_no_file: true)
           end
         end
+      when MavenRequireDSL
+        @specfile = @basedir = Dir.pwd
       when nil
         # ignore
       else
